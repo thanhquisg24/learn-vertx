@@ -1,3 +1,13 @@
 {
-  "http.port" : 8082
+  "http.server.port" : 8089,
+  
+  "wikidb.sqlqueries.resource.file":"/home/qui/eclipse-workspace/my-app/src/main/resources/db-queries.properties",
+  "wikidb.queue":"wikidb-queue",
+  "wikidb.jdbc.host":"localhost",
+  "wikidb.jdbc.port":3306,
+  "wikidb.jdbc.database":"javabase",
+  "wikidb.jdbc.username":"root",
+  "wikidb.jdbc.password":"soldier001",
+  "wikidb.jdbc.max_pool_size":30
+
 }
