@@ -229,6 +229,14 @@ public class HttpServerVerticle extends AbstractVerticle {
 
   // tag::apiRoot[]
   private void apiRoot(RoutingContext context) {
+  /*  JsonObject response = new JsonObject();
+    response
+    .put("success", true)
+    .put("pages", "aaaaaaa"); // <2>
+    context.response().setStatusCode(200);
+    context.response().putHeader("Content-Type", "application/json");
+    context.response().end(response.encode()); // <3>*/
+    
     dbService.fetchAllPagesData(reply -> {
       JsonObject response = new JsonObject();
       if (reply.succeeded()) {

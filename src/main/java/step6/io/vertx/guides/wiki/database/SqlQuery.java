@@ -20,7 +20,7 @@ package step6.io.vertx.guides.wiki.database;
 /**
  * @author <a href="https://julien.ponge.org/">Julien Ponge</a>
  */
-enum SqlQuery {
+public enum SqlQuery {
   CREATE_PAGES_TABLE,
   ALL_PAGES,
   GET_PAGE,

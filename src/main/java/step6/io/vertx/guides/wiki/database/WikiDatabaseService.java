@@ -25,9 +25,8 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.sql.SQLClient;
-
+import io.vertx.serviceproxy.ProxyHelper;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,12 +40,10 @@ public interface WikiDatabaseService {
     return new WikiDatabaseServiceImpl(dbClient, sqlQueries, readyHandler); 
   }
 
-  static WikiDatabaseService create(JDBCClient dbClient, HashMap<SqlQuery, String> sqlQueries, Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
-    return new WikiDatabaseServiceImpl(dbClient, sqlQueries, readyHandler);
-  }
 
   static WikiDatabaseService createProxy(Vertx vertx, String address) {
     return new WikiDatabaseServiceVertxEBProxy(vertx, address);
+   // return ProxyHelper.createProxy(WikiDatabaseService.class, vertx, address);
   }
 
   @Fluent

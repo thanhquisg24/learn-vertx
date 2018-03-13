@@ -22,7 +22,6 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLClient;
 import io.vertx.ext.sql.SQLConnection;
@@ -43,29 +42,6 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
 
   private final HashMap<SqlQuery, String> sqlQueries;
   private final SQLClient dbClient;
-
-  WikiDatabaseServiceImpl(JDBCClient dbClient, HashMap<SqlQuery, String> sqlQueries, Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
-    this.dbClient = dbClient;
-    this.sqlQueries = sqlQueries;
-
-    dbClient.getConnection(ar -> {
-      if (ar.failed()) {
-        LOGGER.error("Could not open a database connection", ar.cause());
-        readyHandler.handle(Future.failedFuture(ar.cause()));
-      } else {
-        SQLConnection connection = ar.result();
-        connection.execute(sqlQueries.get(SqlQuery.CREATE_PAGES_TABLE), create -> {
-          connection.close();
-          if (create.failed()) {
-            LOGGER.error("Database preparation error", create.cause());
-            readyHandler.handle(Future.failedFuture(create.cause()));
-          } else {
-            readyHandler.handle(Future.succeededFuture(this));
-          }
-        });
-      }
-    });
-  }
 
   public WikiDatabaseServiceImpl(SQLClient dbClient2, HashMap<SqlQuery, String> sqlQueries2,
       Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
