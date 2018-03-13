@@ -14,9 +14,9 @@
 * under the License.
 */
 
-package step3.io.vertx.guides.wiki.database;
+package step6.io.vertx.guides.wiki.database;
 
-import step3.io.vertx.guides.wiki.database.WikiDatabaseService;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.Handler;
 import io.vertx.core.AsyncResult;
@@ -39,14 +39,14 @@ import io.vertx.serviceproxy.ProxyHelper;
 import io.vertx.serviceproxy.ProxyHandler;
 import io.vertx.serviceproxy.ServiceException;
 import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
-import step3.io.vertx.guides.wiki.database.SqlQuery;
 import io.vertx.core.json.JsonArray;
+import java.util.List;
 import io.vertx.ext.jdbc.JDBCClient;
-import io.vertx.core.Vertx;
-import step3.io.vertx.guides.wiki.database.WikiDatabaseService;
-import io.vertx.core.json.JsonObject;
+
 import java.util.HashMap;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.AsyncResult;
+import step6.io.vertx.guides.wiki.database.SqlQuery;
 import io.vertx.core.Handler;
 
 /*
@@ -120,12 +120,17 @@ public class WikiDatabaseServiceVertxProxyHandler extends ProxyHandler {
       }
       accessed();
       switch (action) {
+
         case "fetchAllPages": {
           service.fetchAllPages(createHandler(msg));
           break;
         }
         case "fetchPage": {
           service.fetchPage((java.lang.String)json.getValue("name"), createHandler(msg));
+          break;
+        }
+        case "fetchPageById": {
+          service.fetchPageById(json.getValue("id") == null ? null : (json.getLong("id").intValue()), createHandler(msg));
           break;
         }
         case "createPage": {
@@ -140,8 +145,10 @@ public class WikiDatabaseServiceVertxProxyHandler extends ProxyHandler {
           service.deletePage(json.getValue("id") == null ? null : (json.getLong("id").intValue()), createHandler(msg));
           break;
         }
-
-
+        case "fetchAllPagesData": {
+          service.fetchAllPagesData(createListHandler(msg));
+          break;
+        }
         default: {
           throw new IllegalStateException("Invalid action: " + action);
         }
