@@ -27,8 +27,8 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.sql.SQLClient;
 import io.vertx.serviceproxy.ProxyHelper;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="https://julien.ponge.org/">Julien Ponge</a>
@@ -36,14 +36,15 @@ import java.util.List;
 @ProxyGen
 @VertxGen
 public interface WikiDatabaseService {
-  static WikiDatabaseService create(SQLClient dbClient, HashMap<SqlQuery, String> sqlQueries, Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
-    return new WikiDatabaseServiceImpl(dbClient, sqlQueries, readyHandler); 
+  static WikiDatabaseService create(SQLClient dbClient,Map<String,String> sqlQueries ,Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
+ //   return new WikiDatabaseServiceImpl(dbClient, sqlQueries, readyHandler); 
+    return new WikiDatabaseServiceImpl(dbClient,sqlQueries, readyHandler); 
   }
-
+  
 
   static WikiDatabaseService createProxy(Vertx vertx, String address) {
-    return new WikiDatabaseServiceVertxEBProxy(vertx, address);
-   // return ProxyHelper.createProxy(WikiDatabaseService.class, vertx, address);
+   return new WikiDatabaseServiceVertxEBProxy(vertx, address);
+  // return ProxyHelper.createProxy(WikiDatabaseService.class, vertx, address);
   }
 
   @Fluent

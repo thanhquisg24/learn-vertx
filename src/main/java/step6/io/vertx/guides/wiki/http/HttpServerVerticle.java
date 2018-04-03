@@ -243,8 +243,8 @@ public class HttpServerVerticle extends AbstractVerticle {
         List<JsonObject> pages = reply.result()
           .stream()
           .map(obj -> new JsonObject()
-            .put("id", obj.getInteger("ID"))  // <1>
-            .put("name", obj.getString("NAME")))
+            .put("id", obj.getInteger("Id"))  // <1>
+            .put("name", obj.getString("Name")))
           .collect(Collectors.toList());
         response
           .put("success", true)
@@ -261,6 +261,8 @@ public class HttpServerVerticle extends AbstractVerticle {
         context.response().end(response.encode());
       }
     });
+      
+      
   }
   // end::apiRoot[]
 
@@ -371,8 +373,8 @@ public class HttpServerVerticle extends AbstractVerticle {
           .result()
           .forEach(page -> {
             JsonObject fileObject = new JsonObject();
-            filesObject.put(page.getString("NAME"), fileObject);
-            fileObject.put("content", page.getString("CONTENT"));
+            filesObject.put(page.getString("Name"), fileObject);
+            fileObject.put("content", page.getString("Content"));
           });
 
         webClient.post(443, "api.github.com", "/gists")

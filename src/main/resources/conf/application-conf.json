@@ -5,7 +5,7 @@
   "wikidb.queue":"wikidb-queue",
   "wikidb.jdbc.host":"localhost",
   "wikidb.jdbc.port":3306,
-  "wikidb.jdbc.database":"javabase",
+  "wikidb.jdbc.database":"demod",
   "wikidb.jdbc.username":"root",
   "wikidb.jdbc.password":"soldier001",
   "wikidb.jdbc.max_pool_size":30

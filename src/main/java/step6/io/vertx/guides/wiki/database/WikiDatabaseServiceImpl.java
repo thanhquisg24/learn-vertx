@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -40,10 +41,11 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WikiDatabaseServiceImpl.class);
 
-  private final HashMap<SqlQuery, String> sqlQueries;
+ // private final HashMap<SqlQueryVar, String> sqlQueries;
+  private final HashMap<String, String> sqlQueries;
   private final SQLClient dbClient;
 
-  public WikiDatabaseServiceImpl(SQLClient dbClient2, HashMap<SqlQuery, String> sqlQueries2,
+ /* public WikiDatabaseServiceImpl(SQLClient dbClient2, HashMap<SqlQueryVar, String> sqlQueries2,
       Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
     this.dbClient = dbClient2;
     this.sqlQueries = sqlQueries2;
@@ -54,7 +56,32 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
         readyHandler.handle(Future.failedFuture(ar.cause()));
       } else {
         SQLConnection connection = ar.result();
-        connection.execute(sqlQueries.get(SqlQuery.CREATE_PAGES_TABLE), create -> {
+        connection.execute(sqlQueries.get(SqlQueryVar.CREATE_PAGES_TABLE), create -> {
+          connection.close();
+          if (create.failed()) {
+            LOGGER.error("Database preparation error", create.cause());
+            readyHandler.handle(Future.failedFuture(create.cause()));
+          } else {
+            readyHandler.handle(Future.succeededFuture(this));
+          }
+        });
+      }
+    });
+  }*/
+  
+  
+  public WikiDatabaseServiceImpl(SQLClient dbClient2, Map<String, String> sqlQueries2,
+      Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
+    this.dbClient = dbClient2;
+    this.sqlQueries = (HashMap<String, String>) sqlQueries2;
+    // TODO Auto-generated constructor stub
+    dbClient.getConnection(ar -> {
+      if (ar.failed()) {
+        LOGGER.error("Could not open a database connection", ar.cause());
+        readyHandler.handle(Future.failedFuture(ar.cause()));
+      } else {
+        SQLConnection connection = ar.result();
+        connection.execute(sqlQueries.get(SqlQueryVar.CREATE_PAGES_TABLE), create -> {
           connection.close();
           if (create.failed()) {
             LOGGER.error("Database preparation error", create.cause());
@@ -67,9 +94,21 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
     });
   }
 
+  public WikiDatabaseServiceImpl(SQLClient dbClient2, Handler<AsyncResult<WikiDatabaseService>> readyHandler) {
+    this.dbClient = dbClient2; 
+    this.sqlQueries=null;
+    // TODO Auto-generated constructor stub
+    dbClient.getConnection(ar -> {
+      if (ar.failed()) {
+        LOGGER.error("Could not open a database connection", ar.cause());
+        readyHandler.handle(Future.failedFuture(ar.cause()));
+      }
+    });
+  }
+
   @Override
   public WikiDatabaseService fetchAllPages(Handler<AsyncResult<JsonArray>> resultHandler) {
-    dbClient.query(sqlQueries.get(SqlQuery.ALL_PAGES), res -> {
+    dbClient.query(sqlQueries.get(SqlQueryVar.ALL_PAGES), res -> {
       if (res.succeeded()) {
         JsonArray pages = new JsonArray(res.result()
           .getResults()
@@ -88,7 +127,7 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
 
   @Override
   public WikiDatabaseService fetchPage(String name, Handler<AsyncResult<JsonObject>> resultHandler) {
-    dbClient.queryWithParams(sqlQueries.get(SqlQuery.GET_PAGE), new JsonArray().add(name), fetch -> {
+    dbClient.queryWithParams(sqlQueries.get(SqlQueryVar.GET_PAGE), new JsonArray().add(name), fetch -> {
       if (fetch.succeeded()) {
         JsonObject response = new JsonObject();
         ResultSet resultSet = fetch.result();
@@ -112,7 +151,7 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
   @Override
   public WikiDatabaseService fetchPageById(int id, Handler<AsyncResult<JsonObject>> resultHandler) {
     System.out.println(id);
-    dbClient.queryWithParams(sqlQueries.get(SqlQuery.GET_PAGE_BY_ID), new JsonArray().add(id), res -> {
+    dbClient.queryWithParams(sqlQueries.get(SqlQueryVar.GET_PAGE_BY_ID), new JsonArray().add(id), res -> {
       if (res.succeeded()) {
         if (res.result().getNumRows() > 0) {
           JsonObject result = res.result().getRows().get(0);
@@ -136,7 +175,7 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
   @Override
   public WikiDatabaseService createPage(String title, String markdown, Handler<AsyncResult<Void>> resultHandler) {
     JsonArray data = new JsonArray().add(title).add(markdown);
-    dbClient.updateWithParams(sqlQueries.get(SqlQuery.CREATE_PAGE), data, res -> {
+    dbClient.updateWithParams(sqlQueries.get(SqlQueryVar.CREATE_PAGE), data, res -> {
       if (res.succeeded()) {
         resultHandler.handle(Future.succeededFuture());
       } else {
@@ -150,7 +189,7 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
   @Override
   public WikiDatabaseService savePage(int id, String markdown, Handler<AsyncResult<Void>> resultHandler) {
     JsonArray data = new JsonArray().add(markdown).add(id);
-    dbClient.updateWithParams(sqlQueries.get(SqlQuery.SAVE_PAGE), data, res -> {
+    dbClient.updateWithParams(sqlQueries.get(SqlQueryVar.SAVE_PAGE), data, res -> {
       if (res.succeeded()) {
         resultHandler.handle(Future.succeededFuture());
       } else {
@@ -164,7 +203,7 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
   @Override
   public WikiDatabaseService deletePage(int id, Handler<AsyncResult<Void>> resultHandler) {
     JsonArray data = new JsonArray().add(id);
-    dbClient.updateWithParams(sqlQueries.get(SqlQuery.DELETE_PAGE), data, res -> {
+    dbClient.updateWithParams(sqlQueries.get(SqlQueryVar.DELETE_PAGE), data, res -> {
       if (res.succeeded()) {
         resultHandler.handle(Future.succeededFuture());
       } else {
@@ -177,7 +216,7 @@ class WikiDatabaseServiceImpl implements WikiDatabaseService {
 
   @Override
   public WikiDatabaseService fetchAllPagesData(Handler<AsyncResult<List<JsonObject>>> resultHandler) {
-    dbClient.query(sqlQueries.get(SqlQuery.ALL_PAGES_DATA), queryResult -> {
+    dbClient.query(sqlQueries.get(SqlQueryVar.ALL_PAGES_DATA), queryResult -> {
       if (queryResult.succeeded()) {
         resultHandler.handle(Future.succeededFuture(queryResult.result().getRows()));
       } else {

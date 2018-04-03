@@ -59,7 +59,7 @@ public class WikiDatabaseVerticle extends AbstractVerticle {
   @Override
   public void start(Future<Void> startFuture) throws Exception {
 
-    HashMap<SqlQuery, String> sqlQueries = loadSqlQueries();
+    HashMap<String, String> sqlQueries = loadSqlQueries();
 
     JsonObject mySQLClientConfig = new JsonObject().put("host",  config().getString(CONFIG_WIKIDB_JDBC_HOST))
         .put("port", config().getInteger(CONFIG_WIKIDB_JDBC_PORT))   // 
@@ -86,7 +86,7 @@ public class WikiDatabaseVerticle extends AbstractVerticle {
   /*
    * Note: this uses blocking APIs, but data is small...
    */
-  private HashMap<SqlQuery, String> loadSqlQueries() throws IOException {
+  private HashMap<String, String> loadSqlQueries() throws IOException {
 
     String queriesFile = config().getString(CONFIG_WIKIDB_SQL_QUERIES_RESOURCE_FILE);
     InputStream queriesInputStream;
@@ -100,13 +100,16 @@ public class WikiDatabaseVerticle extends AbstractVerticle {
     queriesProps.load(queriesInputStream);
     queriesInputStream.close();
 
-    HashMap<SqlQuery, String> sqlQueries = new HashMap<>();
-    sqlQueries.put(SqlQuery.CREATE_PAGES_TABLE, queriesProps.getProperty("create-pages-table"));
-    sqlQueries.put(SqlQuery.ALL_PAGES, queriesProps.getProperty("all-pages"));
-    sqlQueries.put(SqlQuery.GET_PAGE, queriesProps.getProperty("get-page"));
-    sqlQueries.put(SqlQuery.CREATE_PAGE, queriesProps.getProperty("create-page"));
-    sqlQueries.put(SqlQuery.SAVE_PAGE, queriesProps.getProperty("save-page"));
-    sqlQueries.put(SqlQuery.DELETE_PAGE, queriesProps.getProperty("delete-page"));
+    HashMap<String, String> sqlQueries = new HashMap<>();
+    sqlQueries.put(SqlQueryVar.CREATE_PAGES_TABLE, queriesProps.getProperty("create-pages-table"));
+    sqlQueries.put(SqlQueryVar.ALL_PAGES, queriesProps.getProperty("all-pages"));
+    sqlQueries.put(SqlQueryVar.GET_PAGE, queriesProps.getProperty("get-page"));
+    sqlQueries.put(SqlQueryVar.CREATE_PAGE, queriesProps.getProperty("create-page"));
+    sqlQueries.put(SqlQueryVar.SAVE_PAGE, queriesProps.getProperty("save-page"));
+    sqlQueries.put(SqlQueryVar.DELETE_PAGE, queriesProps.getProperty("delete-page"));
+    sqlQueries.put(SqlQueryVar.GET_PAGE_BY_ID, queriesProps.getProperty("get-page-by-id"));
+    sqlQueries.put(SqlQueryVar.ALL_PAGES_DATA, queriesProps.getProperty("all-pages-data"));
+    
     return sqlQueries;
   }
 }
