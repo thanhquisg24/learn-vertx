@@ -1,6 +1,8 @@
 {
   "http.server.port" : 8089,
-  
+  "https-keygen":"/home/qui/eclipse-workspace/my-app/src/main/resources/conf/server-keystore.jks",
+  "jwt-keygen":"/home/qui/eclipse-workspace/my-app/src/main/resources/conf/keystore.jceks",
+  "shiro-config":"/home/qui/eclipse-workspace/my-app/src/main/resources/wiki-users.properties",
   "wikidb.sqlqueries.resource.file":"/home/qui/eclipse-workspace/my-app/src/main/resources/db-queries.properties",
   "wikidb.queue":"wikidb-queue",
   "wikidb.jdbc.host":"localhost",

@@ -49,6 +49,10 @@
 			</dependency>
 			<dependency>
 			  <groupId>io.vertx</groupId>
+			  <artifactId>vertx-rx-java2</artifactId>
+			</dependency>
+			<dependency>
+			  <groupId>io.vertx</groupId>
 			  <artifactId>vertx-service-proxy</artifactId>
 			  <classifier>processor</classifier>
 			</dependency>
@@ -64,14 +68,26 @@
 			<dependency>
 				  <groupId>io.vertx</groupId>
 				  <artifactId>vertx-mysql-postgresql-client</artifactId>
-				
-				</dependency>
+			</dependency>
 				<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 				<dependency>
 				    <groupId>mysql</groupId>
 				    <artifactId>mysql-connector-java</artifactId>
 				    <version>5.1.30</version>
 				</dependency>
+			    <!-- tag::shiro[] -->
+			    <dependency>
+			      <groupId>io.vertx</groupId>
+			      <artifactId>vertx-auth-shiro</artifactId>
+			    </dependency>
+			    <!-- end::shiro[] -->
+			
+			    <!-- tag::jwt[] -->
+			    <dependency>
+			      <groupId>io.vertx</groupId>
+			      <artifactId>vertx-auth-jwt</artifactId>
+			    </dependency>
+			    <!-- end::jwt[] -->
 				
 			<dependency>
 			  <groupId>com.github.rjeschke</groupId>
